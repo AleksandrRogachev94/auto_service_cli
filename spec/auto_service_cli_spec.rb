@@ -1,11 +1,7 @@
 require "spec_helper"
 
-describe AutoServiceCli do
+describe AutoServiceCLI do
   it "has a version number" do
-    expect(AutoServiceCli::VERSION).not_to be nil
-  end
-
-  it "does something useful" do
-    expect(false).to eq(true)
+    expect(AutoServiceCLI::VERSION).not_to be nil
   end
 end

@@ -1,5 +1,8 @@
-require "auto_service_cli/version"
+require "open-uri"
+require "nokogiri"
+require "pry"
 
-module AutoServiceCli
-  # Your code goes here...
+require_relative "auto_service_cli/version"
+
+module AutoServiceCLI
 end
