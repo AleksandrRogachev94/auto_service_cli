@@ -11,4 +11,6 @@ require "auto_service_cli"
 # Pry.start
 
 require "irb"
+Scr = AutoServiceCLI::Scraper
+Cen = AutoServiceCLI::ServiceCenter
 IRB.start

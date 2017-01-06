@@ -1,5 +1,12 @@
 class AutoServiceCLI::ServiceCenter
-  attr_accessor :name, :url
+  attr_accessor :name,
+                :int_url,
+                :ext_url,
+                :main_category,
+                :open_status,
+                :address,
+                :tel_number,
+                :rating
   @@all = []
 
   # Constructors
@@ -16,6 +23,28 @@ class AutoServiceCLI::ServiceCenter
 
   def save
     @@all << self
+  end
+
+  def details_from_hash(details)
+    details.each do |detail, value|
+      self.send("#{detail}=", value)
+    end
+    format_rating unless self.rating.nil?
+  end
+
+  def format_rating
+    case self.rating
+    when "one"
+      self.rating = "1 star"
+    when "two"
+      self.rating = "2 stars"
+    when "three"
+      self.rating = "3 stars"
+    when "four"
+      self.rating = "4 stars"
+    when "five"
+      self.rating = "5 stars" 
+    end
   end
 
   # Class mehods
