@@ -1,27 +1,28 @@
 class AutoServiceCLI::Scraper
   attr_reader :doc, :sort_type, :zip
 
-  def initialize(zip)
-    @sort_type = "default"
+  def initialize(zip, sort_type = "default")
+    @sort_type = sort_type
     @zip = zip
-    binding.pry
-    #@url = "#{AutoServiceCLI::URL_WORLD_RANKIGS_TEMPLATE}#{year}"
-    #@doc = Nokogiri::HTML(open("http://www.topuniversities.com/university-rankings/university-subject-rankings/2016/engineering-chemical"))
-    #binding.pry
+    @doc = Nokogiri::HTML(open(get_url))
   end
 
   def get_url
     raise InvalidURLData, "Invalid input data (zip or sort type)!!!" unless valid_url_data?
-    AutoServiceCLI::URL_TEMPLATE << "#{@zip}&s=#{sort_type}"
-    #http://www.yellowpages.com/search?search_terms=auto%20service&geo_location_terms=17401&s=default
+    AutoServiceCLI::URL_TEMPLATE + "#{self.zip}&s=#{self.sort_type}"
   end
 
   def valid_url_data?
-    (sort_type == "default" || sort_type == "distance" || sort_type == "rating" || sort_type == "name") && zip > 0
+    (self.sort_type == "default" || self.sort_type == "distance" || self.sort_type == "rating" || self.sort_type == "name") && self.zip > 0
   end
 
   def scrape_centers
-    raise InvalidURL if @doc == nil
-    universities = self.doc.css(".uni a").text
+    raise InvalidPage "Invalid page!!!" if self.doc == nil
+    centers = self.doc.css(".organic .result .info")
+    centers.each do |center|
+      clCenter = AutoServiceCLI::ServiceCenter.create(center.css(".n a").text)
+      clCenter.url = AutoServiceCLI::URL_BASE + center.css(".n a").attr("href").value.to_s
+      puts "#{clCenter.name} #{clCenter.url}"
+    end
   end
 end

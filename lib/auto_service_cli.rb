@@ -15,4 +15,4 @@ end
 # Errors
 
 class InvalidURLData < StandardError; end
-class InvalidURL < StandardError; end
+class InvalidPage < StandardError; end

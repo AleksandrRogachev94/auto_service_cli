@@ -1,5 +1,5 @@
 class AutoServiceCLI::ServiceCenter
-  attr_accessor :name
+  attr_accessor :name, :url
   @@all = []
 
   # Constructors
