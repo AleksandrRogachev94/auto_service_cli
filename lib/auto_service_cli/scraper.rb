@@ -14,7 +14,7 @@ class AutoServiceCLI::Scraper
   end
 
   def self.valid_sort_type?(type)
-    type == "default" || type == "distance" || type == "rating" || type == "name"
+    type == "default" || type == "distance" || type == "average_rating" || type == "name"
   end
 
   # Helper methods
@@ -57,7 +57,10 @@ class AutoServiceCLI::Scraper
 
       # scraping rating
       rate = center.css(".info-primary .result-rating")
-      main_details[:rating] = rate.attr("class").value.split(" ").last unless rate.empty?
+      unless rate.empty?
+        attributes = rate.attr("class").value.split(" ")
+        main_details[:rating] = attributes.slice(1, attributes.size-1)
+      end
 
       # scraping adress
       address_full = []

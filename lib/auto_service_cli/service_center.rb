@@ -35,22 +35,25 @@ class AutoServiceCLI::ServiceCenter
     details.each do |detail, value|
       self.send("#{detail}=", value)
     end
-    format_rating unless self.rating.nil?
+    format_rating if details.include?(:rating)
   end
 
   def format_rating
-    case self.rating
+    case self.rating.first
     when "one"
-      self.rating = "1 star"
+      new_rating = "1"
     when "two"
-      self.rating = "2 stars"
+      new_rating = "2"
     when "three"
-      self.rating = "3 stars"
+      new_rating = "3"
     when "four"
-      self.rating = "4 stars"
+      new_rating = "4"
     when "five"
-      self.rating = "5 stars"
+      new_rating = "5"
     end
+
+    new_rating << ".5" if self.rating.size == 2 && self.rating.last == "half"
+    self.rating = new_rating + " star(s)"
   end
 
   # Class mehods
