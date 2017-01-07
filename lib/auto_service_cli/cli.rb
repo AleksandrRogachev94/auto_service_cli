@@ -57,6 +57,7 @@ class AutoServiceCLI::CLI
 
   def list_centers
     puts "-----------------------------------------------------------------------------"
+    puts "\tZIP: #{self.scraper.zip}\n\tSorting type: #{self.scraper.sort_type}\n".cyan
     AutoServiceCLI::ServiceCenter.all.each.with_index(1) do |center,i|
       print "#{i}".cyan; print " #{center.name}"
       puts center.rating.nil? ? "" : ", rating: #{center.rating}"
@@ -95,19 +96,20 @@ class AutoServiceCLI::CLI
       end
 
       puts "-----------------------------------------------------------------------------"
-      puts "\n\tName:\n#{center.name}\n\n".cyan
-      puts "\tRating:\n#{center.rating}\n\n".cyan unless center.main_category.nil?
-      puts "\tAddress:\n#{center.address}\n\n".cyan unless center.address.nil?
-      puts"\tPhone number:\n#{center.phone_number}\n\n".cyan unless center.phone_number.nil?
+      puts "\n\tName:\n#{center.name}\n".cyan
+      puts "\tRating:\n#{center.rating}\n".cyan unless center.rating.nil?
+      puts "\tCategory:\n#{center.main_category}\n".cyan unless center.main_category.nil?
+      puts "\tAddress:\n#{center.address}\n".cyan unless center.address.nil?
+      puts"\tPhone number:\n#{center.phone_number}\n".cyan unless center.phone_number.nil?
 
       unless center.int_url.nil?
-        puts "\tStatus:\n#{center.open_status}\n\n".cyan unless center.open_status.nil?
-        puts "\tSlogan:\n#{center.slogan}\n\n".cyan unless center.slogan.nil?
+        puts "\tStatus:\n#{center.open_status}\n".cyan unless center.open_status.nil?
+        puts "\tSlogan:\n#{center.slogan}\n".cyan unless center.slogan.nil?
         puts "\tWorking hours:\n#{center.working_hours}\n".cyan unless center.working_hours.nil?
-        puts "\tDescription:\n#{center.description}\n\n".cyan unless center.description.nil?
-        puts "\tServices:\n#{center.services}\n\n".cyan unless center.services.nil?
-        puts "\tBrands:\n#{center.brands}\n\n".cyan unless center.brands.nil?
-        puts "\tPayment methods:\n#{center.payment}\n\n".cyan unless center.payment.nil?
+        puts "\tDescription:\n#{center.description}\n".cyan unless center.description.nil?
+        puts "\tServices:\n#{center.services}\n".cyan unless center.services.nil?
+        puts "\tBrands:\n#{center.brands}\n".cyan unless center.brands.nil?
+        puts "\tPayment methods:\n#{center.payment}\n".cyan unless center.payment.nil?
       end
 
       puts "\tSee more at:\n#{center.ext_url}\n\n".cyan unless center.ext_url.nil?
