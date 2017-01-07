@@ -104,7 +104,8 @@ class AutoServiceCLI::Scraper
     end
     details[:working_hours] = working_hours unless working_hours.empty?
 
-    description = doc.css("#business-details .description").last
+    description = doc.css("#business-details p.description").last
+    description = doc.css("#business-details dd.description").last if description.nil?
     details[:description] = description.text unless description.nil?
 
     for_services = doc.css("#business-details dl")[1]

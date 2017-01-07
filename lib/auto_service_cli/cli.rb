@@ -126,7 +126,6 @@ class AutoServiceCLI::CLI
       @scraper =  AutoServiceCLI::Scraper.new(self.zip, self.cur_sort_type)
       puts "name"
     end
-    puts self.scraper.get_url
     self.scraper.scrape_centers
     puts "Done"
   end
@@ -149,6 +148,6 @@ class AutoServiceCLI::CLI
   end
 
   def goodbye
-    puts "Thank you for using this application!"
+    puts "\nThank you for using this application!"
   end
 end
