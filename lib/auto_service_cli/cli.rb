@@ -88,27 +88,29 @@ class AutoServiceCLI::CLI
 
     if input.to_i >= 1 && input.to_i <= 30
       center = AutoServiceCLI::ServiceCenter.all[input.to_i - 1]
-      puts "\nObtaining data..."
-      self.scraper.scrape_center_details(center)
-      puts "Done"
-
-      puts "\n\tName:\n#{center.name}\n\n"
-      puts "\tRating:\n#{center.rating}\n\n" unless center.rating.nil?
-      puts "\tCategory:\n#{center.main_category}\n\n" unless center.main_category.nil?
-      puts "\tAddress:\n#{center.address}\n\n" unless center.address.nil?
-      puts"\tPhone number:\n#{center.phone_number}\n\n" unless center.phone_number.nil?
-
       unless center.int_url.nil?
-        puts "\tStatus:\n#{center.open_status}\n\n" unless center.open_status.nil?
-        puts "\tSlogan:\n#{center.slogan}\n\n" unless center.slogan.nil?
-        puts "\tWorking hours:\n#{center.working_hours}\n" unless center.working_hours.nil?
-        puts "\tDescription:\n#{center.description}\n\n" unless center.description.nil?
-        puts "\tServices:\n#{center.services}\n\n" unless center.services.nil?
-        puts "\tBrands:\n#{center.brands}\n\n" unless center.brands.nil?
-        puts "\tPayment methods:\n#{center.payment}\n\n" unless center.payment.nil?
+        puts "\nObtaining data..."
+        self.scraper.scrape_center_details(center)
+        puts "Done"
       end
 
-      puts "\tSee more at:\n#{center.ext_url}\n\n" unless center.ext_url.nil?
+      puts "\n\tName:\n#{center.name}\n\n".blue
+      puts "\tRating:\n#{center.rating}\n\n".blue unless center.rating.nil?
+      puts "\tCategory:\n#{center.main_category}\n\n".blue unless center.main_category.nil?
+      puts "\tAddress:\n#{center.address}\n\n".blue unless center.address.nil?
+      puts"\tPhone number:\n#{center.phone_number}\n\n".blue unless center.phone_number.nil?
+
+      unless center.int_url.nil?
+        puts "\tStatus:\n#{center.open_status}\n\n".blue unless center.open_status.nil?
+        puts "\tSlogan:\n#{center.slogan}\n\n".blue unless center.slogan.nil?
+        puts "\tWorking hours:\n#{center.working_hours}\n".blue unless center.working_hours.nil?
+        puts "\tDescription:\n#{center.description}\n\n".blue unless center.description.nil?
+        puts "\tServices:\n#{center.services}\n\n".blue unless center.services.nil?
+        puts "\tBrands:\n#{center.brands}\n\n".blue unless center.brands.nil?
+        puts "\tPayment methods:\n#{center.payment}\n\n".blue unless center.payment.nil?
+      end
+
+      puts "\tSee more at:\n#{center.ext_url}\n\n".light_blue unless center.ext_url.nil?
     end
   end
 
@@ -134,10 +136,10 @@ class AutoServiceCLI::CLI
   # Helper methods
 
   def help_menu
-    puts "1. list centers"
-    puts "2. sort centers"
-    puts "3. details about center"
-    puts "10. exit"
+    puts "1. list centers".green
+    puts "2. sort centers".green
+    puts "3. details about center".green
+    puts "10. exit".green
   end
 
   def help_sort

@@ -85,7 +85,7 @@ class AutoServiceCLI::Scraper
   # Scrape center details from the internal url (if available)
 
   def scrape_center_details(center)
-    raise InvalidPage, "Invalid page!!!" unless center.is_a? AutoServiceCLI::ServiceCenter || center.int_url.nil?
+    raise InvalidPage, "Invalid page!!!" if !center.is_a? AutoServiceCLI::ServiceCenter || center.int_url.nil?
     doc = Nokogiri::HTML(open(center.int_url))
     raise InvalidPage "Invalid page!!!" if doc == nil
 
