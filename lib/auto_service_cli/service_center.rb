@@ -2,11 +2,17 @@ class AutoServiceCLI::ServiceCenter
   attr_accessor :name,
                 :int_url,
                 :ext_url,
+                :rating,
                 :main_category,
-                :open_status,
                 :address,
-                :tel_number,
-                :rating
+                :phone_number,
+                :open_status,
+                :slogan,
+                :working_hours,
+                :description,
+                :services,
+                :brands,
+                :payment
   @@all = []
 
   # Constructors
@@ -43,7 +49,7 @@ class AutoServiceCLI::ServiceCenter
     when "four"
       self.rating = "4 stars"
     when "five"
-      self.rating = "5 stars" 
+      self.rating = "5 stars"
     end
   end
 
