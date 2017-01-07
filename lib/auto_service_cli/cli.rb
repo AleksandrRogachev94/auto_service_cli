@@ -1,7 +1,7 @@
 class AutoServiceCLI::CLI
 
   attr_reader :zip, :cur_sort_type
-  attr_reader :scr_sort_default, :scr_sort_distance, :scr_sort_rating, :scr_sort_name
+  attr_reader :scraper
 
   def initialize
     self.cur_sort_type = "default"
@@ -31,19 +31,6 @@ class AutoServiceCLI::CLI
 
   def cur_sort_type=(type)
     @cur_sort_type = type if AutoServiceCLI::Scraper.valid_sort_type?(type)
-  end
-
-  def get_cur_scraper
-    case self.cur_sort_type
-    when "default"
-      self.scr_sort_default
-    when "distance"
-      self.scr_sort_distance
-    when "average_rating"
-      self.scr_sort_rating
-    when "name"
-      self.scr_sort_name
-    end
   end
 
   #-----------------------------------------------------------------------------------
@@ -96,28 +83,32 @@ class AutoServiceCLI::CLI
   end
 
   def get_details
-    puts "Enter the number of center:"
+    puts "\tEnter the number of center:"
     input = gets.strip
 
     if input.to_i >= 1 && input.to_i <= 30
       center = AutoServiceCLI::ServiceCenter.all[input.to_i - 1]
-      puts "\nName:\n#{center.name}\n\n"
-      puts "Rating:\n#{center.rating}\n\n" unless center.rating.nil?
-      puts "Category:\n#{center.main_category}\n\n" unless center.main_category.nil?
-      puts "Address:\n#{center.address}\n\n" unless center.address.nil?
-      puts"Phone number:\n#{center.phone_number}\n\n" unless center.phone_number.nil?
+      puts "\nObtaining data..."
+      self.scraper.scrape_center_details(center)
+      puts "Done"
+
+      puts "\n\tName:\n#{center.name}\n\n"
+      puts "\tRating:\n#{center.rating}\n\n" unless center.rating.nil?
+      puts "\tCategory:\n#{center.main_category}\n\n" unless center.main_category.nil?
+      puts "\tAddress:\n#{center.address}\n\n" unless center.address.nil?
+      puts"\tPhone number:\n#{center.phone_number}\n\n" unless center.phone_number.nil?
 
       unless center.int_url.nil?
-        puts "Status:\n#{center.open_status}\n\n" unless center.open_status.nil?
-        puts "Slogan:\n#{center.slogan}\n\n" unless center.slogan.nil?
-        puts "Working hours:\n#{center.working_hours}\n\n" unless center.working_hours.nil?
-        puts "Description:\n#{center.description}\n\n" unless center.description.nil?
-        puts "Services:\n#{center.services}\n\n" unless center.services.nil?
-        puts "Brands:\n#{center.brands}\n\n" unless center.brands.nil?
-        puts "Payment methods:\n#{center.payment}\n\n" unless center.payment.nil?
+        puts "\tStatus:\n#{center.open_status}\n\n" unless center.open_status.nil?
+        puts "\tSlogan:\n#{center.slogan}\n\n" unless center.slogan.nil?
+        puts "\tWorking hours:\n#{center.working_hours}\n" unless center.working_hours.nil?
+        puts "\tDescription:\n#{center.description}\n\n" unless center.description.nil?
+        puts "\tServices:\n#{center.services}\n\n" unless center.services.nil?
+        puts "\tBrands:\n#{center.brands}\n\n" unless center.brands.nil?
+        puts "\tPayment methods:\n#{center.payment}\n\n" unless center.payment.nil?
       end
 
-      puts "See more at:\n#{center.ext_url}\n" unless center.ext_url.nil?
+      puts "\tSee more at:\n#{center.ext_url}\n\n" unless center.ext_url.nil?
     end
   end
 
@@ -126,20 +117,17 @@ class AutoServiceCLI::CLI
     AutoServiceCLI::ServiceCenter.reset_all!
     case self.cur_sort_type
     when "default"
-      @scr_sort_default = AutoServiceCLI::Scraper.new(self.zip, self.cur_sort_type)
-      puts "default"
+      @scraper = AutoServiceCLI::Scraper.new(self.zip, self.cur_sort_type)
     when "distance"
-      @scr_sort_distance =  AutoServiceCLI::Scraper.new(self.zip, self.cur_sort_type)
-      puts "distance"
+      @scraper =  AutoServiceCLI::Scraper.new(self.zip, self.cur_sort_type)
     when "average_rating"
-      @scr_sort_rating =  AutoServiceCLI::Scraper.new(self.zip, self.cur_sort_type)
-      puts "average_rating"
+      @scraper =  AutoServiceCLI::Scraper.new(self.zip, self.cur_sort_type)
     when "name"
-      @scr_sort_name =  AutoServiceCLI::Scraper.new(self.zip, self.cur_sort_type)
+      @scraper =  AutoServiceCLI::Scraper.new(self.zip, self.cur_sort_type)
       puts "name"
     end
-    puts get_cur_scraper.get_url
-    get_cur_scraper.scrape_centers
+    puts self.scraper.get_url
+    self.scraper.scrape_centers
     puts "Done"
   end
 

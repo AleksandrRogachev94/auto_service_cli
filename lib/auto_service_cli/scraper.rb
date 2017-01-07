@@ -44,15 +44,17 @@ class AutoServiceCLI::Scraper
       main_details = {}
       # scraping names
       obj_center = AutoServiceCLI::ServiceCenter.create(center.css(".n a").text)
-      url = center.css(".n a").attr("href").value
 
-      # scraping url
-      unless url.empty?
-        if external_link?(url)
-          main_details[:ext_url] = url
-        else
+      # scraping internal url
+      url = center.css(".n a").attr("href").value
+      if !url.empty? && !external_link?(url)
           main_details[:int_url] = AutoServiceCLI::URL_BASE + url
-        end
+      end
+
+      # scraping external url
+      url = center.css(".links a.track-visit-website")
+      unless url.empty?
+          main_details[:ext_url] = url.attr("href").value
       end
 
       # scraping rating
