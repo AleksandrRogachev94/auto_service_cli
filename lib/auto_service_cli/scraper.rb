@@ -1,19 +1,31 @@
 class AutoServiceCLI::Scraper
   attr_reader :doc, :sort_type, :zip
 
+  # Constructors and class methods.
+
   def initialize(zip, sort_type = "default")
     @sort_type = sort_type
     @zip = zip
     @doc = Nokogiri::HTML(open(get_url))
   end
 
+  def self.valid_zip?(zip)
+      zip.to_i > 0
+  end
+
+  def self.valid_sort_type?(type)
+    type == "default" || type == "distance" || type == "rating" || type == "name"
+  end
+
+  # Helper methods
+
   def get_url
-    raise InvalidURLData, "Invalid input data (zip or sort type)!!!" unless valid_url_data?
+    raise InvalidURLData, "Invalid input data: zip - #{self.zip}, sort type - #{self.sort_type}" unless valid_url_data?
     AutoServiceCLI::URL_TEMPLATE + "#{self.zip}&s=#{self.sort_type}"
   end
 
   def valid_url_data?
-    (self.sort_type == "default" || self.sort_type == "distance" || self.sort_type == "rating" || self.sort_type == "name") && self.zip > 0
+    self.class.valid_zip?(self.zip) && self.class.valid_sort_type?(self.sort_type)
   end
 
   def external_link?(url)
