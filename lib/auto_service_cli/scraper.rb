@@ -42,36 +42,14 @@ class AutoServiceCLI::Scraper
     centers.each do |center|
 
       main_details = {}
-      # scraping names
       obj_center = AutoServiceCLI::ServiceCenter.create(center.css(".n a").text)
 
-      # scraping internal url
-      url = center.css(".n a").attr("href").value
-      main_details[:int_url] = AutoServiceCLI::URL_BASE + url if !url.empty? && !external_link?(url)
-
-      # scraping external url
-      url = center.css(".links a.track-visit-website")
-      main_details[:ext_url] = url.attr("href").value unless url.empty?
-
-      # scraping rating
-      rate = center.css(".info-primary .result-rating")
-      unless rate.empty?
-        attributes = rate.attr("class").value.split(" ")
-        main_details[:rating] = attributes.slice(1, attributes.size-1)
-      end
-
-      # scraping adress
-      address_full = []
-      address_full << center.css(".info-primary .adr span").collect {|el| el.text.split(",").first}
-      main_details[:address] = address_full.join(", ") unless address_full.flatten.empty?
-
-      #scraping phone number
-      phone_number = center.css(".info-primary .phone.primary").text
-      main_details[:phone_number] = phone_number unless phone_number.empty?
-
-      # scraping category
-      category = center.css(".info-secondary .categories a").text
-      main_details[:main_category] = category unless category.empty?
+      url = scrape_internal_url(center); main_details[:int_url] = url unless url.nil?
+      url = scrape_external_url(center); main_details[:ext_url] = url unless url.nil?
+      rating = scrape_rating(center); main_details[:rating] = rating unless rating.nil?
+      address = scrape_address(center); main_details[:address] = address unless address.nil?
+      phone = scrape_phone_number(center); main_details[:phone_number] = phone unless phone.nil?
+      category = scrape_category(center); main_details[:main_category] = category unless category.nil?
 
       obj_center.details_from_hash(main_details) # setting all details to center.
     end
@@ -87,8 +65,9 @@ class AutoServiceCLI::Scraper
 
     details = {}
 
-    open_status = doc.css(".business-card-wrapper .status-text").text
-    details[:open_status] = open_status unless open_status.empty?
+    status = scrape_status(doc); main_details[:open_status] = status unless status.nil?
+    slogan = scrape_slogan(doc); main_details[:slogan] = slogan unless slogan.nil?
+    hours = scrape_hours(doc); main_details[:workin_hours] = hours unless hours.nil?
 
     slogan = doc.css("#business-details .slogan").text
     details[:slogan] = slogan unless slogan.empty?
@@ -120,9 +99,47 @@ class AutoServiceCLI::Scraper
     center.details_from_hash(details)
   end
 
-  def scrape_each_center_details
-    AutoServiceCLI::ServiceCenter.all.each do |center|
-      scrape_center_details(center) unless center.int_url.nil?
+  def scrape_status(doc)
+    open_status = doc.css(".business-card-wrapper .status-text")
+    open_status.empty? ? nil : open_status.text
+  end
+
+  #---------------------------------------------------------------------------------------
+  # Scraping helpers
+
+private
+
+  def scrape_internal_url(center)
+    url = center.css(".n a").attr("href").value
+    (!url.empty? && !external_link?(url)) ? AutoServiceCLI::URL_BASE + url : nil
+  end
+
+  def scrape_external_url(center)
+    url = center.css(".links a.track-visit-website")
+    url.empty? ? nil : url.attr("href").value
+  end
+
+  def scrape_rating(center)
+    rate = center.css(".info-primary .result-rating")
+    unless rate.empty?
+      attributes = rate.attr("class").value.split(" "); attributes.slice(1, attributes.size-1)
+    else
+      nil
     end
+  end
+
+  def scrape_address(center)
+    address_full = center.css(".info-primary .adr span").collect {|el| el.text.split(",").first}
+    address_full.flatten.empty? ? nil : address_full.join(", ")
+  end
+
+  def scrape_phone_number(center)
+    phone_number = center.css(".info-primary .phone.primary")
+    phone_number.empty? ? nil : phone_number.text
+  end
+
+  def scrape_category(center)
+    category = center.css(".info-secondary .categories a")
+    category.empty? ? nil : category.text
   end
 end
