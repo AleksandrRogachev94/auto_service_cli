@@ -65,43 +65,15 @@ class AutoServiceCLI::Scraper
 
     details = {}
 
-    status = scrape_status(doc); main_details[:open_status] = status unless status.nil?
-    slogan = scrape_slogan(doc); main_details[:slogan] = slogan unless slogan.nil?
-    hours = scrape_hours(doc); main_details[:workin_hours] = hours unless hours.nil?
-
-    slogan = doc.css("#business-details .slogan").text
-    details[:slogan] = slogan unless slogan.empty?
-
-    working_hours = ""
-    doc.css("#business-details .open-hours time").each do |time|
-      working_hours << time.css(".day-label").text
-      working_hours << ", " + time.css(".day-hours").text + "\n"
-    end
-    details[:working_hours] = working_hours unless working_hours.empty?
-
-    description = doc.css("#business-details p.description").last
-    description = doc.css("#business-details dd.description").last if description.nil?
-    details[:description] = description.text if !description.nil? && description.css("a").empty? #exclude case of facebook and twitter links, without decription
-
-    for_services = doc.css("#business-details dl")[1]
-    unless for_services.nil?
-      if for_services.css("dt").first.text == "Services/Products:"
-        services = for_services.css("dd").first.text
-        details[:services] = services unless services.empty?
-      end
-    end
-
-    brands = doc.css("#business-details .brands").text
-    details[:brands] = brands unless brands.empty?
-    payment = doc.css("#business-details .payment").text
-    details[:payment] = payment unless payment.empty?
+    status = scrape_status(doc); details[:open_status] = status unless status.nil?
+    slogan = scrape_slogan(doc); details[:slogan] = slogan unless slogan.nil?
+    hours = scrape_hours(doc); details[:working_hours] = hours unless hours.nil?
+    description = scrape_description(doc); details[:description] = description unless description.nil?
+    services = scrape_services(doc); details[:services] = services unless services.nil?
+    brands = scrape_brands(doc); details[:brands] = brands unless brands.nil?
+    payment = scrape_payment(doc); details[:payment] = payment unless payment.nil?
 
     center.details_from_hash(details)
-  end
-
-  def scrape_status(doc)
-    open_status = doc.css(".business-card-wrapper .status-text")
-    open_status.empty? ? nil : open_status.text
   end
 
   #---------------------------------------------------------------------------------------
@@ -142,4 +114,50 @@ private
     category = center.css(".info-secondary .categories a")
     category.empty? ? nil : category.text
   end
+end
+
+def scrape_status(doc)
+  open_status = doc.css(".business-card-wrapper .status-text")
+  open_status.empty? ? nil : open_status.text
+end
+
+def scrape_slogan(doc)
+  slogan = doc.css("#business-details .slogan")
+  slogan.empty? ? nil : slogan.text
+end
+
+def scrape_hours(doc)
+  working_hours = ""
+  doc.css("#business-details .open-hours time").each do |time|
+    working_hours << time.css(".day-label").text
+    working_hours << ", " + time.css(".day-hours").text + "\n"
+  end
+  working_hours.empty? ? nil : working_hours
+end
+
+def scrape_description(doc)
+  description = doc.css("#business-details p.description").last
+  description = doc.css("#business-details dd.description").last if description.nil?
+  (!description.nil? && description.css("a").empty?) ? description.text : nil #exclude case of facebook and twitter links, without decription
+end
+
+def scrape_services(doc)
+  for_services = doc.css("#business-details dl")[1]
+  unless for_services.nil?
+    if for_services.css("dt").first.text == "Services/Products:"
+      services = for_services.css("dd").first.text
+      return services.empty? ? nil : services
+    end
+  end
+  nil
+end
+
+def scrape_brands(doc)
+  brands = doc.css("#business-details .brands")
+  brands.empty? ? nil : brands.text
+end
+
+def scrape_payment(doc)
+  payment = doc.css("#business-details .payment")
+  payment.empty? ? nil : payment.text
 end
