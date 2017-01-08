@@ -47,15 +47,11 @@ class AutoServiceCLI::Scraper
 
       # scraping internal url
       url = center.css(".n a").attr("href").value
-      if !url.empty? && !external_link?(url)
-          main_details[:int_url] = AutoServiceCLI::URL_BASE + url
-      end
+      main_details[:int_url] = AutoServiceCLI::URL_BASE + url if !url.empty? && !external_link?(url)
 
       # scraping external url
       url = center.css(".links a.track-visit-website")
-      unless url.empty?
-          main_details[:ext_url] = url.attr("href").value
-      end
+      main_details[:ext_url] = url.attr("href").value unless url.empty?
 
       # scraping rating
       rate = center.css(".info-primary .result-rating")
@@ -66,7 +62,7 @@ class AutoServiceCLI::Scraper
 
       # scraping adress
       address_full = []
-      address_full << center.css(".info-primary .adr span").collect.with_index {|el,i| el.text.split(",").first}
+      address_full << center.css(".info-primary .adr span").collect {|el| el.text.split(",").first}
       main_details[:address] = address_full.join(", ") unless address_full.empty?
 
       #scraping phone number
