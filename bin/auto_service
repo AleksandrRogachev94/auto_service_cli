@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
 require "bundler/setup"
-require "auto_service_cli"
+require_relative "../lib/auto_service_cli"
 
 AutoServiceCLI::CLI.new.call

@@ -150,7 +150,7 @@ class AutoServiceCLI::CLI
   end
 
   def help_sort
-    puts "\n\t1. Sort by default".green
+    puts "\n\t1. Default".green
     puts "\t2. Sort by distance".green
     puts "\t3. Sort by rating".green
     puts "\t4. Sort by name".green

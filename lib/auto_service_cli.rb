@@ -3,7 +3,6 @@ require "nokogiri"
 require "colorize"
 require "pry"
 
-require_relative "auto_service_cli/version"
 require_relative "auto_service_cli/constants"
 require_relative "auto_service_cli/service_center"
 require_relative "auto_service_cli/scraper"
