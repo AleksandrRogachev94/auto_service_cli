@@ -1,7 +1,7 @@
 require "open-uri"
 require "nokogiri"
-require "pry"
 require "colorize"
+require "pry"
 
 require_relative "auto_service_cli/version"
 require_relative "auto_service_cli/constants"
