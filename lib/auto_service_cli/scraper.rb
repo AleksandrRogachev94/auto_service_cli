@@ -63,7 +63,7 @@ class AutoServiceCLI::Scraper
       # scraping adress
       address_full = []
       address_full << center.css(".info-primary .adr span").collect {|el| el.text.split(",").first}
-      main_details[:address] = address_full.join(", ") unless address_full.empty?
+      main_details[:address] = address_full.join(", ") unless address_full.flatten.empty?
 
       #scraping phone number
       phone_number = center.css(".info-primary .phone.primary").text
@@ -102,7 +102,7 @@ class AutoServiceCLI::Scraper
 
     description = doc.css("#business-details p.description").last
     description = doc.css("#business-details dd.description").last if description.nil?
-    details[:description] = description.text unless description.nil?
+    details[:description] = description.text if !description.nil? && description.css("a").empty? #exclude case of facebook and twitter links, without decription
 
     for_services = doc.css("#business-details dl")[1]
     unless for_services.nil?

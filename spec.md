@@ -9,4 +9,4 @@ yellowpages.com is used to scrape the data about 30 service centers near entered
 
 - [x] Implement both list and detail views  
 In CLI class #list_centers method was implemented. It shows 30 centers near entered zip code.
-In CLI class #get_details method was implemented. It invokes the method to scrape the data from the specific url and list the results.
+In CLI class #get_details method was implemented. It invokes the method to scrape the data from the specific url and lists the results.

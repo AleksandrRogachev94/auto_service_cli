@@ -1,6 +1,6 @@
 # Auto Service CLI
 
-This program provides CLI to find auto service centers near desired location and see details about each center. Also you can sort your list of centers by rating, distance, or name. Auto Service CLI asks user to type zip code and then finds 30 service center near this position. Also the program allows to see all available details about each center.
+This program provides CLI to find auto service centers near desired location and see details about each center. Also you can sort your list of centers by rating, distance, or name. Auto Service CLI asks user to type zip code and then finds 30 service centers near this position. Also the program allows to see all available details about each center.
 
 ## Installation
 
@@ -22,9 +22,9 @@ Or install it yourself as:
 
 To use CLI type the following in command line:
 
-  $ auto_service
+    $ auto_service
 
-Follow the instructions in command line
+Follow the instructions in command line.
 
 ## Development
 
