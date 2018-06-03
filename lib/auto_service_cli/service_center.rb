@@ -32,28 +32,37 @@ class AutoServiceCLI::ServiceCenter
   end
 
   def details_from_hash(details)
+    # modify hash's rating
+    if details.include?(:rating)
+      details[:rating] = format_rating(details[:rating])
+    end
+
     details.each do |detail, value|
       self.send("#{detail}=", value)
     end
-    format_rating if details.include?(:rating)
   end
 
-  def format_rating
-    case self.rating.first
-    when "one"
-      new_rating = "1"
-    when "two"
-      new_rating = "2"
-    when "three"
-      new_rating = "3"
-    when "four"
-      new_rating = "4"
-    when "five"
-      new_rating = "5"
+  # ex ["two", "half"] or ["two"]
+  def format_rating(rating)
+    case rating[0]
+      when "one"
+        new_rating = "1"
+      when "two"
+        new_rating = "2"
+      when "three"
+        new_rating = "3"
+      when "four"
+        new_rating = "4"
+      when "five"
+        new_rating = "5"
+      else
+        # assume it's already formatted
+        return rating
     end
 
-    new_rating << ".5" if self.rating.size == 2 && self.rating.last == "half"
-    self.rating = new_rating + " star(s)"
+    # TODO
+    new_rating << ".5" if rating.size == 2 && rating.last == "half"
+    new_rating + " star(s)"
   end
 
   # Class mehods

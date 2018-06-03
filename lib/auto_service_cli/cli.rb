@@ -1,14 +1,16 @@
-class AutoServiceCLI::CLI
+# TODO cur_sort_type string => data type
 
-  attr_reader :zip, :cur_sort_type
-  attr_reader :scraper
+
+class AutoServiceCLI::CLI
+  attr_accessor :scraper, :scraper
+  private :scraper, :scraper=
 
   def initialize
-    self.cur_sort_type = "default"
+    self.scraper = AutoServiceCLI::Scraper.new
   end
 
   def call
-    puts "\n\tWelcome to auto service centers searching CLI!".green
+    welcome
     prompt_zip
     scrape_main_page
     list_centers
@@ -20,17 +22,7 @@ class AutoServiceCLI::CLI
       puts "\tEnter you zip code:".magenta
       zip = gets.strip
     end until AutoServiceCLI::Scraper.valid_zip?(zip)
-    self.zip = zip
-  end
-
-  # Writers and Readers
-
-  def zip=(zip)
-    @zip = zip if AutoServiceCLI::Scraper.valid_zip?(zip)
-  end
-
-  def cur_sort_type=(type)
-    @cur_sort_type = type if AutoServiceCLI::Scraper.valid_sort_type?(type)
+    scraper.zip = zip
   end
 
   #-----------------------------------------------------------------------------------
@@ -39,15 +31,15 @@ class AutoServiceCLI::CLI
   def menu
     loop do
       help_menu
-      puts "\nMake a choise:".magenta
+      puts "\nMake a choice:".magenta
       input = gets.strip
       case input
       when "1"
         list_centers
       when "2"
-        sort
-      when "3"
         get_details
+      when "3"
+        sort
       when "4"
         scrape_main_page
         list_centers
@@ -60,7 +52,7 @@ class AutoServiceCLI::CLI
 
   def list_centers
     puts "-----------------------------------------------------------------------------"
-    puts "\tZIP: #{self.scraper.zip}\n\tSorting type: #{self.scraper.sort_type}\n".cyan
+    puts "\tZIP: #{scraper.zip}\n\tSorting type: #{scraper.sort_type}\n".cyan
     AutoServiceCLI::ServiceCenter.all.each.with_index(1) do |center,i|
       print "#{i}.".cyan; print " #{center.name}"
       puts center.rating.nil? ? "" : ", rating: #{center.rating}"
@@ -74,13 +66,13 @@ class AutoServiceCLI::CLI
     input = gets.strip
     case input
     when "1"
-      self.cur_sort_type = "default"
+      scraper.sort_type = AutoServiceCLI::Scraper::SORT_TYPES[:DAFAULT]
     when "2"
-      self.cur_sort_type = "distance"
+      scraper.sort_type = AutoServiceCLI::Scraper::SORT_TYPES[:DISTANCE]
     when "3"
-      self.cur_sort_type = "average_rating"
+      scraper.sort_type = AutoServiceCLI::Scraper::SORT_TYPES[:AVERAGE_RATING]
     when "4"
-      self.cur_sort_type = "name"
+      scraper.sort_type = AutoServiceCLI::Scraper::SORT_TYPES[:NAME]
     end
     scrape_main_page
     list_centers
@@ -94,7 +86,7 @@ class AutoServiceCLI::CLI
       center = AutoServiceCLI::ServiceCenter.all[input.to_i - 1]
       unless center.int_url.nil?
         puts "\nObtaining data..."
-        self.scraper.scrape_center_details(center)
+        scraper.scrape_center_details(center)
         puts "Done"
       end
 
@@ -121,30 +113,26 @@ class AutoServiceCLI::CLI
   end
 
   def scrape_main_page
-    puts "Obtaining data..."
+    puts "Obtaining data for you... It will take a few seconds"
+
+    # clean up all records.
     AutoServiceCLI::ServiceCenter.reset_all!
-    case self.cur_sort_type
-    when "default"
-      @scraper = AutoServiceCLI::Scraper.new(self.zip, self.cur_sort_type)
-    when "distance"
-      @scraper =  AutoServiceCLI::Scraper.new(self.zip, self.cur_sort_type)
-    when "average_rating"
-      @scraper =  AutoServiceCLI::Scraper.new(self.zip, self.cur_sort_type)
-    when "name"
-      @scraper =  AutoServiceCLI::Scraper.new(self.zip, self.cur_sort_type)
-      puts "name"
-    end
-    self.scraper.scrape_centers
+
+    scraper.scrape_centers
     puts "Done"
   end
 
   #-----------------------------------------------------------------------------------
   # Helper methods
 
+  def welcome
+    puts "\n\tWelcome to auto service centers searching CLI!\n\tby Aleksandr Rogachev © #{Time.new.year}\n".green
+  end
+
   def help_menu
     puts "\n1. List centers".green
-    puts "2. Change sorting type".green
-    puts "3. Show details about service center".green
+    puts "2. Show details about service center".green
+    puts "3. Change sorting type".green
     puts "4. Reload centers".green
     puts "10. Exit".green
   end
