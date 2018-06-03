@@ -10,8 +10,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Aleksandr Rogachev"]
   spec.email         = ["aleksandr.rogachev1994@gmail.com"]
 
-  spec.summary       = %q{CLI for searching of auto service centers near your location.}
-  spec.description   = %q{This CLI allows to find service centers near desired zip code (with sorting) and see details about each center.}
+  spec.summary       = %q{CLI for searching auto service centers near your location}
+  spec.description   = %q{This CLI allows you to find auto service centers near desired zip code, sort them, and fetch details about each of them}
   spec.homepage      = "https://github.com/AleksandrRogachev94/auto_service_cli"
   spec.license       = "MIT"
 
